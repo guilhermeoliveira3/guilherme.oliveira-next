@@ -1,5 +1,4 @@
 export default function Componente1() {
-
     return (
         <p className="
         bg-gradient from bg-teal-600 to bg-emerald-300 

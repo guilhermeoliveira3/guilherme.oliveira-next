@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,14 +27,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className="min-h-screen flex flex-col items-center justify-center animate-spin"
+        className="min-h-screen flex flex-col items-center justify-center"
       >
-        <header>
+        <header className="flex flex-col justify-center items-center">
           <h1>React & Next.js</h1>
           <nav>
-            <Link href="/">Home</Link>
-            <Link href="/route">Rota</Link>
-            <Link href="/caracteristicas">Caracteristicas</Link>
+            <Link href="/" className="p-2">Home</Link>
+            <Link href="/route" className="p-2">Rota</Link>
+            <Link href="/caracteristicas" className="p-2">Caracteristicas</Link>
+            <Link href="/sobre" className="p-2">Sobre</Link>
+            <Link href="/tecnologias">Tecnologias</Link>
+            <Link href="/Projetos">Projetos</Link>
           </nav>
         </header>
         <main className="bg-purple-500 w-[70vw] min-h-[60vw] flex flex-col justify-center items-center">
