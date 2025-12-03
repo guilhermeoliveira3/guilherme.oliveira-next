@@ -1,4 +1,4 @@
-##https://guilherme-oliveira-next-efu6-eq76b3trt.vercel.app/componentes/contador
+##https://guilherme-oliveira-next-efu6-eq76b3trt.vercel.app
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
