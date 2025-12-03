@@ -1,38 +1,42 @@
 "use client";
+
 import React, { useEffect, useState } from 'react';
 
 export default function Contador() {
     const MIN = 0;
     const MAX = 10;
 
-    const [valor, setValor] = useState<number>(() => {
-        const salvo = localStorage.getItem("contador_valor");
-        return salvo ? Number(JSON.parse(salvo)) : 0;
-    });
+    //vercel tava chateando por n inicializar zzz
+    const [valor, setValor] = useState<number>(0);
+    const [historico, setHistorico] = useState<number[]>([]);
 
-    const [historico, setHistorico] = useState<number[]>(() => {
-        const salvo = localStorage.getItem("contador_historico");
-        if (salvo) {
-            try {
-                const parsed = JSON.parse(salvo);
-                return Array.isArray(parsed) ? parsed.map(Number) : [];
-            } catch {
-                return [];
-            }
-        }
-        return [];
-    });
 
-    // Salva no localStorage sempre que mudar
     useEffect(() => {
-        localStorage.setItem("contador_valor", JSON.stringify(valor));
+        try {
+            const salvoValor = localStorage.getItem("contador_valor");
+            if (salvoValor) setValor(Number(salvoValor));
+
+            const salvoHistorico = localStorage.getItem("contador_historico");
+            if (salvoHistorico) {
+                const parsed = JSON.parse(salvoHistorico);
+                if (Array.isArray(parsed)) {
+                    setHistorico(parsed.map(Number));
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao carregar do localStorage", error);
+        }
+    }, []); 
+
+    useEffect(() => {
+        localStorage.setItem("contador_valor", String(valor));
         localStorage.setItem("contador_historico", JSON.stringify(historico));
     }, [valor, historico]);
 
     const atualizarValor = (novo: number) => {
         const limitado = Math.min(MAX, Math.max(MIN, novo));
         setValor(limitado);
-        setHistorico((prev) => [...prev, limitado]); // agora prev sempre é array
+        setHistorico((prev) => [...prev, limitado]);
     };
 
     const cor = () => {
@@ -42,13 +46,13 @@ export default function Contador() {
     };
 
     return (
-        <div className="flex flex-col items-center gap-6 ">
+        <div className="flex flex-col items-center gap-6">
             <h1 className={`text-6xl font-bold ${cor()}`}>{valor}</h1>
 
             <div className="flex gap-4">
                 <button
                     onClick={() => atualizarValor(valor - 1)}
-                    className="px-6 py-3 rounded-full  bg-amber-400 hover:bg-amber-500 font-semibold"
+                    className="px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-500 font-semibold disabled:opacity-50"
                     disabled={valor === MIN}
                 >
                     -1
@@ -56,7 +60,7 @@ export default function Contador() {
 
                 <button
                     onClick={() => atualizarValor(valor + 1)}
-                    className="px-6 py-3 rounded-full shadow bg-blue-400 hover:bg-blue-500 font-semibold"
+                    className="px-6 py-3 rounded-full shadow bg-blue-400 hover:bg-blue-500 font-semibold disabled:opacity-50"
                     disabled={valor === MAX}
                 >
                     +1
