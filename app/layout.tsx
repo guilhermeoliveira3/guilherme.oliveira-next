@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import Relogio from "./componentes/relogio/page";
 
 
 const geistSans = Geist({
@@ -36,9 +37,10 @@ export default function RootLayout({
             <Link href="/route" className="p-2">Rota</Link>
             <Link href="/caracteristicas" className="p-2">Caracteristicas</Link>
             <Link href="/sobre" className="p-2">Sobre</Link>
-            <Link href="/componentes/tecnologias" className="p-2">Tecnologias</Link>
+            <Link href="/componentes/tecnologiasCard" className="p-2">Tecnologias</Link>
             <Link href="/Projetos" className="p-2">Projetos</Link>
             <Link href="/componentes/contador" className="p-2">Contador</Link>
+            <Link href="/componentes/input" className="p-2">Input</Link>
             
           </nav>
         </header>
@@ -46,7 +48,10 @@ export default function RootLayout({
           {children}
         </main>
 
-        <footer>DIW</footer>
+        <footer>
+          <p>DIW</p>
+          <Relogio />
+        </footer>
       </body>
     </html>
   );

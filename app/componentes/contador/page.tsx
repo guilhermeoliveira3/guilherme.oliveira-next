@@ -42,7 +42,7 @@ export default function Contador() {
     };
 
     return (
-        <div className="flex flex-col items-center gap-6 p-8 max-w-sm mx-auto bg-white rounded-2xl shadow-lg">
+        <div className="flex flex-col items-center gap-6 ">
             <h1 className={`text-6xl font-bold ${cor()}`}>{valor}</h1>
 
             <div className="flex gap-4">
