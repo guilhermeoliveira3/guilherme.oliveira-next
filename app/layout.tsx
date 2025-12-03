@@ -36,8 +36,10 @@ export default function RootLayout({
             <Link href="/route" className="p-2">Rota</Link>
             <Link href="/caracteristicas" className="p-2">Caracteristicas</Link>
             <Link href="/sobre" className="p-2">Sobre</Link>
-            <Link href="/tecnologias">Tecnologias</Link>
-            <Link href="/Projetos">Projetos</Link>
+            <Link href="/componentes/tecnologias" className="p-2">Tecnologias</Link>
+            <Link href="/Projetos" className="p-2">Projetos</Link>
+            <Link href="/componentes/contador" className="p-2">Contador</Link>
+            
           </nav>
         </header>
         <main className="bg-purple-500 w-[70vw] min-h-[60vw] flex flex-col justify-center items-center">
