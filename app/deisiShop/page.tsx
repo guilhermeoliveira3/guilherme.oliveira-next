@@ -29,7 +29,7 @@ export default function page() {
                 {data?.map((product, i) => (
                     <article >
                         <h3>{product.title}</h3>
-
+                        
 
                     </article>
                 ))}
