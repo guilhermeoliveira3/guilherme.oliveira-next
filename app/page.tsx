@@ -1,4 +1,4 @@
-import Componente1 from '@/app/componentes/componente-test/componente1'
+import Componente1 from '@/componentes/componente-test/componente1'
 
 export default function page() {
 

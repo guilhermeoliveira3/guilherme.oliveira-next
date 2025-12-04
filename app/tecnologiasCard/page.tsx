@@ -1,5 +1,5 @@
 import React from 'react'
-import TecnologiasCard from '@/app/componentes/tecnologiasCard/component'
+import TecnologiasCard from '@/app/tecnologiasCard/component'
 
 export default function page() {
     return (
