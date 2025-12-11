@@ -34,18 +34,15 @@ export default function RootLayout({
           <h1>React & Next.js</h1>
           <nav>
             <Link href="/" className="p-2">Home</Link>
-            <Link href="/route" className="p-2">Rota</Link>
-            <Link href="/caracteristicas" className="p-2">Caracteristicas</Link>
-            <Link href="/sobre" className="p-2">Sobre</Link>
             <Link href="/tecnologiasCard" className="p-2">Tecnologias</Link>
             <Link href="/Projetos" className="p-2">Projetos</Link>
             <Link href="/contador" className="p-2">Contador</Link>
             <Link href="/input" className="p-2">Input</Link>
-            <Link href="/deisiShop" className="p-2">DeisiShop</Link>
+            <Link href="/produtos" className="p-2">DeisiShop</Link>
             
           </nav>
         </header>
-        <main className="bg-purple-500 w-[70vw] min-h-[60vw] flex flex-col justify-center items-center">
+        <main className="bg-purple-500 w-[90vw] min-h-[60vw] flex flex-col justify-center items-center rounded-md p-7">
           {children}
         </main>
 
