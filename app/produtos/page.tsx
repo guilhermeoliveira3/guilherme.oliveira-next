@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { Produto } from '@/models/interfaces'
 import useSWR from 'swr'
 import ProductCard from '@/componentes/produtoCard/ProductCard'
+import ProductCardOnCart from '@/componentes/productCardOnCart/productCardOnCart'
 
 
 const fetcher = async (url: string) => {
@@ -26,6 +27,9 @@ export default function page() {
     const [ordenacao, setOrdenacao] = useState<'nome-asc' | 'nome-desc' | 'preco-asc' | 'preco-desc'>('nome-asc')
 
     const [cart, setCart] = useState<Array<Produto & { quantity: number }>>([])
+
+    const[isEstudanteDeisi, setIsEstudanteDeisi] = useState(false)
+    const[cupom, setCupom] = useState('')
 
     useEffect(() => {
         localStorage.setItem('deisi-cart', JSON.stringify(cart))
@@ -76,6 +80,27 @@ export default function page() {
         return 0
     })
 
+    const buy = async () => {
+        if (cart.length === 0) {
+            alert('Adicione produtos ao carrinho para comprar!')
+            return
+        }
+
+        try {
+            const requestBody = {
+                products: cart.map(item => ({
+                    id: item.id,
+                    quantity: item.quantity
+                })),
+                name: "",
+                student: isEstudanteDeisi,
+                coupon: cupom || null
+            }
+        } catch {
+
+        }
+    }
+
     if (error) return <p>error.message</p>
     if (isLoading) return <p>A descarregar dados</p>
     if (!data || data.length == 0) return <p>Não foi possível encontrar os produtos. Tente novamente!</p>
@@ -111,16 +136,30 @@ export default function page() {
 
             {cart.length > 0 && (
                 <div className='fixed right-6 bottom-6 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 z-50'>
-                    <h3 className='text-xl font-bold mb-4'>Carrinho ({cart.length})</h3>
+                    <h3 className='text-xl font-bold mb-4 text-gray-600'>Carrinho ({cart.length})</h3>
+
+                    <div className='space-y-4 mb-4 p-4 bg-gray-50 rounded-lg'>
+                        <label className='flex items-center gap-2'>
+                            <input type="checkbox" checked={isEstudanteDeisi} onChange={(e) => setIsEstudanteDeisi(e.target.checked)} className='rounded' />
+                            <span className='text-sm'>Estudante DEISI?</span>
+                        </label>
+
+                        <input 
+                            type="text" 
+                            placeholder='Cumpom de desconto'
+                            value={cupom}
+                            onChange={(e) => setCupom(e.target.value.toUpperCase())}
+                            className='w-full p-3 border border-gray-300 rounded-lg'/>
+                    </div>
 
                     <div className="space-y-4 max-h-96 overflow-y-auto">
                         {cart.map(item => (
                             <div>
-                                <ProductCard key={item.id} product={item} />
-                                <p>x {item.quantity}</p>
+                                <ProductCardOnCart key={item.id} product={item} quantidade={item.quantity} removeFromCart={removeFromCart} />
                             </div>
                         ))}
                     </div>
+
                 </div>
             )}
 
