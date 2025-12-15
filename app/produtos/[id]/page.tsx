@@ -22,7 +22,7 @@ export default function PaginaProduto({ params }: { params: Promise<{ id: string
   )
 
   if (isLoading) return <p className="text-center py-20">Carregando produto...</p>
-  if (error) return <>
+  if (error || !produto) return <>
         <p className="text-center text-red-500 p-4 bg-white m-4 rounded-xl font-semibold">Produto não encontrado</p>
         <Link href="/produtos" className='text-white hover:shadow-xl p-7 bg-amber-700 rounded-lg'>
             ← Voltar à lista de Produtos
@@ -42,7 +42,7 @@ export default function PaginaProduto({ params }: { params: Promise<{ id: string
       <div className="max-w-6xl mx-auto px-6">
         
 
-        <ProdutoDetalhe produto={produto} />
+        <ProdutoDetalhe produto ={produto} />
       </div>
     </div>
   )
