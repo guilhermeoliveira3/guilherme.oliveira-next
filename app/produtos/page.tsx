@@ -28,14 +28,19 @@ export default function page() {
 
     const [cart, setCart] = useState<Array<Produto & { quantity: number }>>([])
 
-    const[isEstudanteDeisi, setIsEstudanteDeisi] = useState(false)
-    const[cupom, setCupom] = useState('')
+    const [isEstudanteDeisi, setIsEstudanteDeisi] = useState(false)
+    const [cupom, setCupom] = useState('')
+
+    const [isCartOpen, setIsCartOpen] = useState(false);
+
+    const [purchaseResult, setPurchaseResult] = useState<{ totalCost: string; reference: string; message: string; error: string } | null>(null);
 
     useEffect(() => {
         localStorage.setItem('deisi-cart', JSON.stringify(cart))
     }, [cart])
 
     const addToCart = (produto: Produto) => {
+        setIsCartOpen(true)
         setCart(prev => {
             let jaExiste = false
             prev.forEach((i) => {
@@ -86,18 +91,43 @@ export default function page() {
             return
         }
 
+
         try {
+            const productsIds: number[] = []
+            cart.forEach(p => {
+                for (let i = 0; i < p.quantity; i++) {
+                    productsIds.push(p.id)
+                }
+            })
+
             const requestBody = {
-                products: cart.map(item => ({
-                    id: item.id,
-                    quantity: item.quantity
-                })),
+                products: productsIds,
                 name: "",
                 student: isEstudanteDeisi,
-                coupon: cupom || null
+                coupon: cupom || ""
             }
-        } catch {
 
+            const response = await fetch("https://deisishop.pythonanywhere.com/buy", {
+                method: "POST",
+                body: JSON.stringify(requestBody),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json()
+                throw new Error(errorData.message || 'Erro na compra')
+            }
+
+            const result = await response.json()
+            setPurchaseResult(result);
+            setCart([])
+            setCupom('')
+            setIsEstudanteDeisi(false);
+
+        } catch {
+            console.log("Erro ao comprar")
         }
     }
 
@@ -134,34 +164,72 @@ export default function page() {
                 ))}
             </div>
 
-            {cart.length > 0 && (
+            {(!isCartOpen) && (
+                <button
+                    onClick={() => setIsCartOpen(true)}
+                    className="fixed right-6 bottom-6 z-50 bg-blue-600 text-white rounded-full w-16 h-16 shadow-2xl flex items-center justify-center text-3xl font-bold hover:bg-blue-700 transition transform hover:scale-110"
+                >
+                    🛒
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                        {cart.reduce((total, item) => total + item.quantity, 0)}
+                    </span>
+                </button>
+            )}
+
+            {(isCartOpen) && (
                 <div className='fixed right-6 bottom-6 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 z-50'>
-                    <h3 className='text-xl font-bold mb-4 text-gray-600'>Carrinho ({cart.length})</h3>
+                    <div className='relative mb-4'>
+                        <h3 className='text-xl font-bold mb-4 text-gray-600'>Carrinho ({cart.length})</h3>
+
+                        <button
+                            onClick={() => setIsCartOpen(false)}
+                            className='absolute -top-2 -right-2  text-red-800 font-semibold text-lg'
+                        >X</button>
+                    </div>
+
 
                     <div className='space-y-4 mb-4 p-4 bg-gray-50 rounded-lg'>
                         <label className='flex items-center gap-2'>
                             <input type="checkbox" checked={isEstudanteDeisi} onChange={(e) => setIsEstudanteDeisi(e.target.checked)} className='rounded' />
-                            <span className='text-sm'>Estudante DEISI?</span>
+                            <span className='text-sm text-gray-600'>Estudante DEISI?</span>
                         </label>
 
-                        <input 
-                            type="text" 
-                            placeholder='Cumpom de desconto'
+                        <input
+                            type="text"
+                            placeholder='Cupom de desconto'
                             value={cupom}
                             onChange={(e) => setCupom(e.target.value.toUpperCase())}
-                            className='w-full p-3 border border-gray-300 rounded-lg'/>
+                            className='w-full p-3 border border-gray-300 rounded-lg text-gray-600' />
                     </div>
 
                     <div className="space-y-4 max-h-96 overflow-y-auto">
                         {cart.map(item => (
-                            <div>
-                                <ProductCardOnCart key={item.id} product={item} quantidade={item.quantity} removeFromCart={removeFromCart} />
+                            <div key={item.id}>
+                                <ProductCardOnCart product={item} quantidade={item.quantity} removeFromCart={removeFromCart} />
                             </div>
                         ))}
                     </div>
 
+                    <button
+                        onClick={buy}
+                        disabled={cart.length === 0}
+                        className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {cart.length === 0 ? 'Carrinho vazio' : 'Comprar'}
+                    </button>
+
+                    {purchaseResult && (
+                        <div className='mt-4 p-4 bg-green-50 rounded-lg text-green-800'>
+                            <h4 className="font-bold"> Compra realizada com sucesso!</h4>
+                            <p>Total: {Number(purchaseResult.totalCost).toFixed(2)}€</p>
+                            <p>Referencia para pagamento: {purchaseResult.reference}</p>
+                            <p>{purchaseResult.message}</p>
+                        </div>
+                    )}
+
                 </div>
             )}
+
 
         </div>
     )
